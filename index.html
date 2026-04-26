@@ -1,200 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lan Yang | Academic Homepage</title>
+    <!-- 使用 Bootstrap 5 快速布局 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 FontAwesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter';
+            background-color: #ffffff;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container { max-width: 960px; }
+        .sidebar { padding-top: 50px; }
+        .main-content { padding-top: 50px; }
+        .profile-pic {
+            width: 100%;
+            max-width: 220px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .name { font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
+        .links a {
+            display: block;
+            color: #555;
+            text-decoration: none;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        .links a:hover { color: #E67E22; }
+        .links a i {
+            width: 25px;            /* 关键：给图标一个固定的占位宽度 */
+            text-align: center;     /* 让图标在 25px 的宽度内居中 */
+            margin-right: 12px;     /* 图标和文字之间的精确间距 */
+            font-size: 1.1em;       /* 统一调整图标大小 */
+        }
+        .section-title {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            font-weight: 600;
+        }
+        /* 1. 外层容器：控制滚动条和高度 */
+        .news-content {
+            height: 250px;       /* 固定高度 */
+            overflow-y: auto;    /* 超过高度自动显示滚动条 */
+            padding-right: 10px; /* 给右侧滚动条留点呼吸空间 */
+        }
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        /* 2. 列表容器：去掉默认缩进和圆点 */
+        .news-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-  <title>Lan Yang</title>
-  <meta content="" name="descriptison">
-  <meta content="" name="keywords">
+        /* 3. 每一条新闻：控制竖线和布局 */
+        .news-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding-left: 12px;
+            border-left: 3px solid #E67E22; /* 橙色小竖线 */
+            line-height: 1.4;
+            transition: all 0.3s ease; 
+            cursor: default; /* 鼠标移上去显示默认箭头，或者用 pointer */
+        }
+        /* 新增：悬停时的动态效果 */
+        .news-item:hover {
+            /* 向右平移 8px，实现你说的缩进/位移效果 */
+            transform: translateX(8px); 
+            
 
-  <!-- Custom fonts for this theme -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/> 
-  <link rel="stylesheet" href="css/academicons.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-  <!-- ronnen -->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+            
+            /* 可选：给个微弱的背景色，让这一行更突出 */
+            background-color: rgba(230, 126, 34, 0.05); 
+        }
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+        /* 4. 日期和文字的间距 */
+        .news-date {
+            font-weight: bold;
+            color: #E67E22;
+            min-width: 75px;
+            flex-shrink: 0;
+        }
 
+        .news-text {
+            flex-grow: 1;
+        }
 
-  <!-- Favicons -->
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+        /* 5. 可选：美化滚动条（让它更像 Mac 风格，窄一点） */
+        .news-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .news-content::-webkit-scrollbar-thumb {
+            background-color: #ddd;
+            border-radius: 10px;
+        }
 
-  <!-- Theme CSS -->
-  <link href="css/freelancer.css" rel="stylesheet">
-
+        .pub-item { margin-bottom: 25px; }
+        .pub-title { font-weight: 600; display: block; }
+        .pub-authors { font-size: 0.95rem; }
+        .pub-authors b { color: #000; }
+        .pub-conf { font-style: italic; color: #555; }
+        .pub-links a {
+            font-size: 0.85rem;
+            margin-right: 10px;
+            padding: 2px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: #666;
+            text-decoration: none;
+        }
+        .pub-links a:hover {
+            background: #E67E22;    /* 橙色背景 (使用您之前喜欢的深橙色) */
+            border-color: #E67E22;  /* 边框也设为橙色 */
+            color: #ffffff;         /* 字体设为纯白 */
+        }
+        .teaser-img {
+            width: 100%;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        @media (max-width: 768px) {
+            .sidebar { text-align: center; border-bottom: 1px solid #eee; padding-bottom: 30px; }
+            .profile-pic { margin: 0 auto 20px; }
+        }
+    </style>
 </head>
+<body>
 
-<body id="page-top">
-  
-
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="index.html">Lan Yang</a>
-      <button class="navbar-toggler navbar-toggler-right text-uppercase bg-secondary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item mx-0 mx-lg-1">
-            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger large" href="publication.html" style="position: relative; top: 5px;">Publication</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
- <!-- Masthead -->
-  <header class="masthead bg-primary text-center">
-    <div class="container">
-      <div class="row justify-content-center align-items-center">
-        
-        <div class="col-md-4">
-          <!-- Masthead Avatar Image -->
-          <img src="img/image.png" alt="My Avatar" class="img-fluid" width="400">
-        </div>
-        
-        <div class="col-md-6 text-left text-black">
-  <!-- <p class="personal-info">
-    Who am I?
-  </p> -->
-  <p class="personal-info">
-     I am a Postdoctoral Researcher in the School of Artificial Intelligence at Beijing University of Posts and Telecommunications (BUPT), where I am also an Affiliated Academic of <u><a href="https://sketchx.ai/" style=color:#4f9dd1; target="_blank">SketchX Lab</a></u>.  </p>
-  <p class="personal-info">
-    My research lies at the intersection of Cognition-Inspired Visual Intelligence, with a specific focus on visual decoding, visual understanding, and creative content generation.  </p>
-  <!-- <p class="personal-info">
-    
-  </p>
-  <p class="personal-info">
-   
-  </p> -->
-
-          
-          <!-- <br>Contact me via: Yael Vinker <br><br></p>  -->
-          
-          <div class="mt-2 mb-1">
-            <a class="btn btn-outline-primary btn-social ml-1 mb-1" href="mailto:lanybupt@gmail.com"> -->
-              <!-- <i class="fas fa-envelope"></i>
-            <!-- </a> -->
-            <!-- <a class="btn btn-outline-primary btn-social ml-1 mb-1" href="https://www.linkedin.com/in/yael-vinker-a91a00157/" target="_blank">
-              <i class="fab fa-fw fa-linkedin-in"></i>
-            </a>
-            <a class="btn btn-outline-primary btn-social ml-1 mb-1" href="https://twitter.com/yvinker" target="_blank">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a class="btn btn-outline-primary btn-social ml-1 mb-1" href="Yael_Vinker_resume.pdf" target="_blank">
-              <i class="fa fa-file"></i>
-            </a> -->
-
-            <a class="btn btn-outline-primary btn-social ml-1 mb-1" href="https://scholar.google.com/citations?user=wJhPd1oAAAAJ&hl=zh-CN" target="_blank">
-                <i class="ai ai-google-scholar" style="font-size: 125%;"></i>
-              </a>
+<div class="container">
+    <div class="row">
+        <!-- 左侧栏 -->
+        <div class="col-md-3 sidebar">
+            <img src="/Users/lan/Desktop/image.png" alt="Profile Picture" class="profile-pic">
+            <div class="name">Lan Yang <br> (杨兰)</div>
+            <p><b>Postdoctoral Fellow</b><br><b>BUPT</b></p>
             
-          </div>
-          <p class ="perosnal-info"> 
-          <br>Email: lanybupt@gmail.com or ylan@bupt.edu.cn <br>
-          Office: Room 803, Teaching Building 3  <br></p> 
-        </div>
-      </div>
-    </div>
-  </header>
-
-
-
-  <div class="container">
-   <div class="row">
-        <!-- <div class="col-lg-8 mx-auto"> -->
-          <div class="col-md-10 element text-left text-black">
-            
-            <div class="mb-3">
-                <!-- <h6 class=" text-uppercase">Dotted</h6> -->
-                <!-- Dotted divider -->
-                <hr class="solid text-black">
+            <div class="links mt-4">
+                <a href="mailto:lanybupt@gmail.com"><i class="fas fa-envelope me-2"></i>Email</a>
+                <a href="https://scholar.google.com/citations?user=wJhPd1oAAAAJ&hl=zh-CN"><i class="fas fa-graduation-cap me-2"></i>Google Scholar</a>
+                <a href="https://github.com/yanglan0225?tab=repositories"><i class="fab fa-github me-2"></i>GitHub</a>
+                <a href="https://x.com/lanyang0225"><i class="fab fa-twitter me-2"></i>Twitter</a>
+                <!-- <a href="#"><i class="fas fa-file-pdf me-2"></i>Curriculum Vitae</a> -->
             </div>
-
-            <div class="personal-name">
-            <h2 class="name-title2  mt-4 mb-3">
-              News
-            </h2>
         </div>
-        <ul>
-          <li>[Apr 2026] Our work on fMRI-to-video reconstruction work has been selected as HighLight paper in CVPR2026!  </li>
-          <li>[Apr 2026] Our work on music generation has been accepted to ACL 2026! </li>
-          <li>[Feb 2026] Our work on fMRI-to-video reconstruction has been accepted to CVPR 2026! See you in Denver! </li>
-          <li>[Feb 2026] Our work on complex sketch generation has been accepted to IJCV! Check out <u><a href="https://link.springer.com/article/10.1007/s11263-026-02768-5" style="color:#4f9dd1;" target="_blank">SACG++</a></u>. </li>
-          <li>[Jan 2026] One paper has been accepted by Pattern Recognition! </li>  
-          <li>[Jan 2026] Two papers on visual content generation have been accepted by ICLR 2026! </li>  
-          <li>[Jan 2026] One paper has been accepted by ICASSP 2026! </li> 
-          <li>[Nov 2025] A paper on visual dialog received the Best Paper Award at IC-NIDC 2025! </li> 
-          <li>[Aug 2025] Supported by the Young Scientists Fund of the National Natural Science Foundation of China (C-level)! </li> 
-          <li>[Jul 2025] Supported by Postdoctoral Fellowship Program of China Postdoctoral Science Foundation (CPSF). </li> 
-          <li>[May 2025] One paper on oracle understanding has been accepted by ACL 2025! </li> 
-          <li>[Dec 2024] Two papers have been accepted by AAAI 2025! </li> 
+
+        <!-- 右侧主内容 -->
+        <div class="col-md-9 main-content">
+            <!-- Bio -->
+            <section id="about" class="mb-5">
+                <h4 class="section-title">About Me</h4>
+                <p>
+
+                    I am currently an A-Level Postdoctoral Fellow at the School of Artificial Intelligence, Beijing University of Posts and Telecommunications (BUPT), working in collaboration with Prof. Lei Li. 
+                    I am also an Affiliated Academic of the <u><a href="https://sketchx.ai/" style=color:#E67E22; target="_blank">SketchX Lab</a></u>. 
+                    I obtained my PhD from BUPT under the supervision of <span style="color: #E67E22;" >Prof. Honggang Zhang</span> and <span style="color: #E67E22;" >Prof. Jun Guo</span>. 
+                    Previously, from 2021 to 2023, I was a joint-PhD student at the University of Surrey, supervised by <span style="color: #E67E22;" >Prof. Yi-Zhe Song</span>.
+                   
+                </p>
+                <p>
+                    My research interests focus on bridging the gap between human cognition and artificial intelligence. 
+                    I aim to build a research system that spans from <strong>neural decoding</strong> to <strong>artistic abstraction</strong> and <strong>physical deployment</strong>.
+                </p>
+
+                <p>My recent work is structured around three progressive pillars:</p>
+
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="margin-bottom: 12px;">
+                        🧠 <strong>Neural Decoding & Perception</strong>: 
+                        Investigating how to reconstruct high-fidelity visual experiences from multi-modal brain signals (fMRI/EEG), aiming to "visualize" human internal perception.
+                    </li>
+                    <li style="margin-bottom: 12px;">
+                        ✨ <strong>Cognitive Abstraction & Generation</strong>: 
+                        Bridging human intent and creative expression by developing models that understand abstract visual languages—ranging from ancient Oracle Bone scripts to contemporary sketches—and translate them into creative artistic forms.
+                    </li>
+                    <li style="margin-bottom: 12px;">
+                        🍀 <strong>Embodied Intelligence & Interaction</strong>: 
+                        Extending visual intelligence from the digital realm to the physical world, exploring how vision-language models can empower autonomous systems in complex environments, such as smart greenhouse ecosystems.
+                    </li>
+                </ul>
+
+                <p>
+                    <em>Overall Goal: To develop "human-centric" AI that perceives like a human, creates with intent, and interacts seamlessly with the physical environment.</em>
+                </p>
+
+            </section>
+
+            <!-- News -->
+
+            <section id="news" class="mb-5">
+                <h4 class="section-title">News</h4>
+                <!-- <div class="news-content">
+                    <span class="news-date" style="color: #E67E22;" >2026.04</span> Our work on <u><a href="https://arxiv.org/abs/2508.20665" style=color:#333333; target="_blank">symbolic music generation</a></u> is accepted by ACL 2026! 
+                </div>
+                <div class="news-item">
+                    <span class="news-date" style="color: #E67E22;" >2026.04</span> Our work on <u><a href="https://arxiv.org/abs/2602.21819" style=color:#333333; target="_blank">fMRI to video reconstruction</a></u> 
+                    is accepted by CVPR 2026! 
+                </div>
+                <div class="news-item">
+                    <span class="news-date" style="color: #E67E22;" >2026.02</span> Our work on <u><a href="https://arxiv.org/abs/2602.21819" style=color:#333333; target="_blank">complex sketch generation</a></u> 
+                    is accepted by IJCV! 
+                </div>
+                <div class="news-item">
+                    <span class="news-date" style="color: #E67E22;" >2026.01</span> One paper is been accepted by Pattern Recognition! 
+                </div>
+                <div class="news-item">
+                    <span class="news-date" style="color: #E67E22;" >2026.01</span> Two papers on visual content generation are been accepted by ICLR 2026! 
+                </div>
+                <div class="news-item">
+                    <span class="news-date" style="color: #E67E22;" >2026.01</span> One paper is accepted by ICASSP 2026!  
+                </div> -->
+                <div class="news-content">
+                <ul>
+                    <li class="news-item">
+                        <span class="news-date">2026.04 </span>
+                        <span class="news-text">Our work on <u><a href="https://arxiv.org/abs/2508.20665" style=color:#333333; target="_blank">Symbolic Music Generation</a></u> 
+                            is accepted by ACL 2026!</span>
+                    </li>
+                    <!-- 当你在这里添加超过 5-6 条新闻时，滚动条就会自动出现了 -->
+                    <li class="news-item">
+                        <span class="news-date">2026.04 </span>
+                        <span class="news-text">Our work on <u><a href="https://arxiv.org/abs/2602.21819" style=color:#333333; target="_blank">fMRI to Video Reconstruction</a></u> 
+                        is accepted by CVPR 2026!</span>
+                    </li>
+                    <li class="news-item">
+                        <span class="news-date">2026.02 </span>
+                        <span class="news-text">Our work on <u><a href="https://arxiv.org/abs/2602.21819" style=color:#333333; target="_blank">Complex Sketch Generation</a></u> 
+                    is accepted by IJCV!</span>
+                    </li>                   
+                     <li class="news-item">
+                        <span class="news-date">2026.01 </span>
+                        <span class="news-text">One paper is been accepted by Pattern Recognition!</span>
+                    </li>                    
+                    <li class="news-item">
+                        <span class="news-date">2026.01 </span>
+                        <span class="news-text">Two papers on Visual Content Generation are been accepted by ICLR 2026!</span>
+                    </li>                    
+                    <li class="news-item">
+                        <span class="news-date">2026.01 </span>
+                        <span class="news-text">One paper is accepted by ICASSP 2026!  </span>
+                    </li>                    
+                    <li class="news-item">
+                        <span class="news-date">2025.11 </span>
+                        <span class="news-text">Our work on Visual Dialog received the Best Paper Award at IC-NIDC 2025!</span>
+                    </li>                   
+                    <li class="news-item">
+                        <span class="news-date">2025.08 </span>
+                        <span class="news-text">Supported by the Young Scientists Fund of the National Natural Science Foundation of China (C-level)!</span>
+                    </li>
+                    <li class="news-item">
+                        <span class="news-date">2025.06 </span>
+                        <span class="news-text">Supported by Postdoctoral Fellowship Program of China Postdoctoral Science Foundation (CPSF).</span>
+                    </li>
+                    <li class="news-item">
+                        <span class="news-date">2025.04 </span>
+                        <span class="news-text">One paper on Oracle Understanding has been accepted by ACL 2025! </span>
+                    </li>
+                    <li class="news-item">
+                        <span class="news-date">2024.12 </span>
+                        <span class="news-text">Two papers have been accepted by AAAI 2025! </span>
+                    </li>
+                </ul>
+            </div>
+            </section>
 
 
-            
-          <!-- <li>[June 2025] I gave an invited talk at the <u><a href="https://syndata4cv.github.io/" style="color:#4f9dd1;" target="_blank">SynData4CV Workshop</a></u> at CVPR 2025, about "Synthetic Data in Creative Applications".</li>
-          <li>[June 2025] MIT CSAIL News featured our work SketchAgent: <u><a href="https://www.csail.mit.edu/news/teaching-ai-models-broad-strokes-sketch-more-humans-do" style="color:#4f9dd1;" target="_blank">"Teaching AI models the broad strokes to sketch more like humans do"</a></u>. Thanks to CSAIL and Alex Shipps for the lovely article!</li>
+            <!-- Selected Publications -->
+            <section id="publications" class="mb-5">
+                <h4 class="section-title">Selected Publications</h4>
+                
+                <!-- Publication 1 -->
+                <div class="row pub-item">
+                    <div class="col-md-4">
+                        <img src="/Users/lan/Desktop/semvideo.png" class="teaser-img" alt="Paper teaser">
+                    </div>
+                    <div class="col-md-8">
+                        <span class="pub-title">SemVideo: Reconstructs What You Watch from Brain Activity via Hierarchical Semantic Guidance</span>
+                        <div class="pub-authors">
+                            Minghan Yang, <b>Lan Yang*</b>, Ke Li, Honggang Zhang, Kaiyue Pang, Yi-Zhe Song
+                        </div>
+                        <div class="pub-conf"><b>CVPR 2026 (Highlight)</b></div>
+                        <div class="pub-links mt-2">
+                            <a href="https://arxiv.org/abs/2602.21819">Paper</a>
+                            <a href="https://github.com/yang-minghan/SemVideo">Code</a>
 
-          <li>[June 2025] Our paper <u><a href="https://sagipolaczek.github.io/NeuralSVG/" style="color:#4f9dd1;" target="_blank">NeuralSVG</a></u> has been accepted to ICCV 2025! Big congrats to the team!</li>
-          <li>[May 2025] Two papers have been accepted to SIGGRAPH 2025! Check out <u><a href="https://inklayer.github.io/" style="color:#4f9dd1;" target="_blank">InkLayer</a></u> and <u><a href="https://swiftsketch.github.io/" style="color:#4f9dd1;" target="_blank">SwiftSketch</a></u>.</li>
-<li>[February 2025] <u><a href="http://sketch-agent.csail.mit.edu/" style="color:#4f9dd1;" target="_blank">SketchAgent</a></u> has been accepted to CVPR 2025!</li>
-<li>[November 2024] Introducing <u><a href="http://sketch-agent.csail.mit.edu/" style="color:#4f9dd1;" target="_blank">SketchAgent</a></u>, a sequential sketch generation method that enables collaborative human-agent sketching.</li>
-<li>[November 2024] I officially received my PhD from Tel Aviv University! You can find my dissertation <u><a href="https://arxiv.org/abs/2411.18727" style="color:#4f9dd1;" target="_blank">here</a></u>.</li>
+                        </div>
+                    </div>
+                </div>
 
-          <li> [September 2024] I’ve joined <u><a href="https://groups.csail.mit.edu/vision/torralbalab/" style=color:#4f9dd1; target="_blank">Antonio Torralba</a></u>'s lab at MIT CSAIL as a postdoctoral associate!</li>
-          <li>[August 2024] Honored to be selected for the <u><a href="https://risingstars-eecs.mit.edu/participants/yael-vinker/" style="color:#4f9dd1;" target="_blank">EECS Rising Stars</a></u> 2024 at MIT!</li>
-          
-<li>[July 2024] <u><a href="https://b-lora.github.io/B-LoRA/" style=color:#4f9dd1; target="_blank">B-LoRA</a></u> has been accepted to ECCV 2024!</li>
-<li> [June 2024] I will attend SGP at MIT. Let's meet!</li>
-<li> [June 2024] I will attend CVPR in Seattle from June 15 to June 22. Let's meet!</li>
+                <!-- Publication 2 -->
+                <div class="row pub-item">
+                    <div class="col-md-4">
+                        <img src="/Users/lan/Desktop/ijcv26.png" class="teaser-img" alt="Paper teaser">
+                    </div>
+                    <div class="col-md-8">
+                        <span class="pub-title">SACG++: Complex Sketch Generation via Representation-Enhanced Scale-Adaptive Classifier Guidance</span>
+                        <div class="pub-authors">
+                            Ke Li, Jijin Hu, Zhipeng Chen, <b>Lan Yang*</b>, Yonggang Qi, Yi-Zhe Song
+                        </div>
+                        <div class="pub-conf"><b>IJCV</b></div>
+                        <div class="pub-links mt-2">
+                            <a href="https://link.springer.com/article/10.1007/s11263-026-02768-5">Paper</a>
+                            <a href="https://github.com/HuJijin/Adaptive_Guided_Sketch">Code</a>
+                        </div>
+                    </div>
+                </div>
 
-<li>[May 2024] I will be participating and giving a talk in the new <u><a href="https://coggraph.github.io/" style=color:#4f9dd1; target="_blank">COGGRAPH workshop!</a></u></li>
+                <div class="row pub-item">
+                    <div class="col-md-4">
+                        <img src="/Users/lan/Desktop/ijcv24.png" class="teaser-img" alt="Paper teaser">
+                    </div>
+                    <div class="col-md-8">
+                        <span class="pub-title">Annotation-Free Human Sketch Quality Assessment</span>
+                        <div class="pub-authors">
+                            <b>Lan Yang</b>, Kaiyue Pang, Honggang Zhang, Yi-Zhe Song
+                        </div>
+                        <div class="pub-conf"><b>IJCV</b></div>
+                        <div class="pub-links mt-2">
+                            <a href="https://arxiv.org/abs/2507.20548">Paper</a>
+                            <a href="https://github.com/yanglan0225/SketchX-Quantifying-Sketch-Quality">Code</a>
+                        </div>
+                    </div>
+                </div>
 
-<li>[CVPR'24] Our work <u><a href="https://livesketch.github.io/" style=color:#4f9dd1; target="_blank">"Breathing Life Into Sketches Using Text-to-Video Priors"</a></u> received a <b><a style="color: darksalmon;">Paper Highlight</a></b> at CVPR'24!</li>
+                <div class="row pub-item">
+                    <div class="col-md-4">
+                        <img src="/Users/lan/Desktop/cvpr24_wire.png" class="teaser-img" alt="Paper teaser">
+                    </div>
+                    <div class="col-md-8">
+                        <span class="pub-title">Wired perspectives: Multi-view wire art embraces generative AI</span>
+                        <div class="pub-authors">
+                            Zhiyu Qu, <b>Lan Yang*</b>, Honggang Zhang, Tao Xiang, Kaiyue Pang, Yi-Zhe Song
+                        </div>
+                        <div class="pub-conf"><b>CVPR 2024</b></div>
+                        <div class="pub-links mt-2">
+                            <a href="https://openaccess.thecvf.com/content/CVPR2024/papers/Qu_Wired_Perspectives_Multi-View_Wire_Art_Embraces_Generative_AI_CVPR_2024_paper.pdf">Paper</a>
+                            <a href="https://dreamwireart.github.io/">Project</a>
+                        </div>
+                    </div>
+                </div>
 
-<li>[SIGGRAPH'24] New paper! <u><a href="https://omriavrahami.com/the-chosen-one/" style=color:#4f9dd1; target="_blank">"The Chosen One: Consistent Characters in Text-to-Image Diffusion Models"</a></u></li>
+                <div class="row pub-item">
+                    <div class="col-md-4">
+                        <img src="/Users/lan/Desktop/cvpr24_oracle.png" class="teaser-img" alt="Paper teaser">
+                    </div>
+                    <div class="col-md-8">
+                        <span class="pub-title">Making Visual Sense of Oracle Bones for You and Me</span>
+                        <div class="pub-authors">
+                            Runqi Qiao, <b>Lan Yang*</b>, Kaiyue Pang, Honggang Zhang
+                        </div>
+                        <div class="pub-conf"><b>CVPR 2024</b></div>
+                        <div class="pub-links mt-2">
+                            <a href="https://openaccess.thecvf.com/content/CVPR2024/papers/Qiao_Making_Visual_Sense_of_Oracle_Bones_for_You_and_Me_CVPR_2024_paper.pdf">Paper</a>
+                        </div>
+                    </div>
+                </div>
 
-<li>[March 2024] I will be visiting and giving a talk about my work at MIT CSAIL, the Berkeley Computer Vision Seminar, and the Stanford Graphics Cafe (GCafe)!</li>
+                <div class="row pub-item">
+                    <div class="col-md-4">
+                        <img src="/Users/lan/Desktop/cvpr22.png" class="teaser-img" alt="Paper teaser">
+                    </div>
+                    <div class="col-md-8">
+                        <span class="pub-title">Finding Badly Drawn Bunnies</span>
+                        <div class="pub-authors">
+                            <b>Lan Yang</b>, Kaiyue Pang, Honggang Zhang, Yi-Zhe Song
+                        </div>
+                        <div class="pub-conf"><b>CVPR 2022</b></div>
+                        <div class="pub-links mt-2">
+                            <a href="https://openaccess.thecvf.com/content/CVPR2022/papers/Yang_Finding_Badly_Drawn_Bunnies_CVPR_2022_paper.pdf">Paper</a>
+                            <a href="https://github.com/yanglan0225/SketchX-Quantifying-Sketch-Quality">Code</a>
+                        </div>
+                    </div>
+                </div>
 
-<li>[NeurIPS'23] New paper! <u><a href="https://seva-benchmark.github.io/" style=color:#4f9dd1; target="_blank">"SEVA: Leveraging Sketches to Evaluate Alignment between Human and Machine Visual Abstraction"</a></u></li>
+            </section>
 
-<li>[Dec. 2023] Our work <u><a href="https://inspirationtree.github.io/inspirationtree/" style=color:#4f9dd1; target="_blank">Inspiration Tree</a></u> received the <b><a style="color: darksalmon;">Best Paper Award</a></b> at SIGGRAPH Asia'23!</li>
-
-<li>[ICCV'23] Our work <u><a href="https://inspirationtree.github.io/inspirationtree/" style=color:#4f9dd1; target="_blank">CLIPascene</a></u> received <b><a style="color: darksalmon;">Oral presentation</a></b> at ICCV'23!</li>
-
-<li>[July 2023] Our work <u><a href="https://wordasimage.github.io/Word-As-Image-Page/" style=color:#4f9dd1; target="_blank">Word-as-Image</a></u> received the <b><a style="color: darksalmon;">Honorable Mention Award</a></b> at SIGGRAPH'23!</li>
-
-<li>[SIGGRAPH'23] New paper! <u><a href="https://yuval-alaluf.github.io/Attend-and-Excite/" style=color:#4f9dd1; target="_blank">Attend-and-Excite</a></u></li>
-
-<li>[July 2022] <u><a href="https://clipasso.github.io/clipasso/" style=color:#4f9dd1; target="_blank">CLIPasso</a></u> received the <b><a style="color: darksalmon;">Best Paper Award</a></b> at SIGGRAPH'22!</li> -->
-
-      </ul>
-           
+            <footer class="mt-5 mb-5 text-muted" style="font-size: 0.8rem;">
+                © 2026 Lan Yang. Last updated: April 2026.
+            </footer>
         </div>
     </div>
-  </div>
-
-
-
-
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
-
+</div>
 
 </body>
-
 </html>
